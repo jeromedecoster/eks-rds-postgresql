@@ -1,0 +1,34 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vote
+  namespace: vote
+  labels:
+    app: vote
+spec:
+  replicas: 1
+  selector: 
+    matchLabels:
+      app: vote
+  template:
+    metadata:
+      labels: 
+        app: vote
+    spec:
+      containers:
+      - name: vote
+        image: "{{.DOCKER_IMAGE}}"
+        ports: 
+          - containerPort: 3000
+        env:
+          - name : WEBSITE_PORT
+            value : "3000"
+          - name : POSTGRES_HOST
+            value : "{{.POSTGRES_HOST}}"
+          - name : POSTGRES_DATABASE
+            value : "{{.POSTGRES_DATABASE}}"
+          - name : POSTGRES_USER
+            value : "{{.POSTGRES_USER}}"
+          - name : POSTGRES_PASSWORD
+            value : "{{.POSTGRES_PASSWORD}}"

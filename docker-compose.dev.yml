@@ -1,0 +1,43 @@
+version: "3"
+
+services:
+  vote:
+    container_name: vote
+    build:
+      context: ./vote
+      dockerfile: Dockerfile.dev
+      # https://stackoverflow.com/a/52430444
+      args:
+        - NODE_ENV=development
+        - VERSION=od1s2faz
+        - WEBSITE_PORT=3000
+        - POSTGRES_HOST=postgres
+    volumes:
+      - "./vote:/app"
+    ports:
+      - "3000:3000"
+      - "35729:35729"
+    networks:
+      - backend
+    depends_on:
+      # https://docs.docker.com/compose/compose-file/compose-file-v2/#depends_on
+      # https://github.com/AnushaVutti/PIE_final/blob/master/docker-compose.yml
+      postgres:
+        condition: service_healthy
+    
+  postgres:
+    container_name: postgres
+    image: postgres:14.3-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=password
+    volumes:
+      - ./sql/create.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: "exit 0"
+    networks:
+      - backend
+
+networks:
+  backend: {}

@@ -1,0 +1,16 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: vote
+  namespace: vote
+  labels:
+    app: vote
+spec:
+  type: LoadBalancer
+  selector:
+    app: vote
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 3000
